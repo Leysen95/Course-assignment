@@ -1,53 +1,55 @@
 import java.util.Objects;
 
 public class Employee {
-    public static long[] printEmployee;
-    private static int counter = 1;
 
-    private static String fullName;
+    private final String fullName;
 
-    private static int division;
+    private int salary;
 
-    private static int salaryEmployee;
+    private int division;
 
-    private static int id;
+    private final int id;
 
-    public Employee(String fullName, int division, int salaryEmployee, int id) {
-        Employee.fullName = fullName;
-        Employee.division = division;
-        Employee.salaryEmployee = salaryEmployee;
-        Employee.id = counter++;
-    }
+    private static int idCount = 1;
 
-    public static int getCounter() {
-        return counter;
+    public Employee(String fullName, int division, int salary) {
+        this.fullName = fullName;
+        this.division = validateDivision(division);
+        this.salary = validateSalary(salary);
+        this.id = idCount++;
     }
 
     public String getFullName() {
         return fullName;
     }
 
+    public int getSalary() {
+        return salary;
+    }
+
+
+    public void setSalary(int salary) {
+        this.salary = validateSalary(salary);
+    }
+
     public int getDivision() {
         return division;
     }
 
-    public int getSalaryEmployee() {
-        return salaryEmployee;
-    }
-
     public void setDivision(int division) {
-        Employee.division = division;
+        this.division = validateDivision(division);
     }
 
-    public void setSalaryEmployee(int salaryEmployee) {
-        Employee.salaryEmployee = salaryEmployee;
+    public int getId() {
+        return id;
     }
 
-    public static String toString(Employee[] employees) {
+    @Override
+    public String toString() {
         return "Employee{" +
                 "fullName='" + fullName + '\'' +
+                ", salary=" + salary +
                 ", division=" + division +
-                ", salaryEmployee=" + salaryEmployee +
                 ", id=" + id +
                 '}';
     }
@@ -57,18 +59,28 @@ public class Employee {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Employee employee = (Employee) o;
-        return true;
+        return salary == employee.salary &&
+                division == employee.division &&
+                id == employee.id &&
+                Objects.equals(fullName, employee.fullName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(fullName, division, salaryEmployee, id);
+        return Objects.hash(fullName, salary, division, id);
     }
 
-    public static Employee[] printEmployee(Employee[] employees) {
-        for (int i = 0; i < employees.length; i++) {
-            System.out.println(employees[i]);
+    private int validateSalary(int salary) {
+        if (salary < 0) {
+            throw new IllegalArgumentException("Заработная плата не может быть отрицательной");
         }
-        return employees;
+        return salary;
+    }
+
+    private int validateDivision(int division) {
+        if (division < 1 || division > 5) {
+            throw new IllegalArgumentException("Номер отдела недопустим.");
+        }
+        return division;
     }
 }
